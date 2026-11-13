@@ -4,10 +4,16 @@ import { NestFactory } from '@nestjs/core';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import { AppModule } from './app.module.js';
+import { RedisIoAdapter } from './redis/redis-io.adapter.js';
+import { REDIS_CLIENT } from './redis/redis.module.js';
+import type { Redis } from 'ioredis';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { rawBody: true });
   const config = app.get(ConfigService);
+  const redisIoAdapter = new RedisIoAdapter(app);
+  await redisIoAdapter.connectToRedis(app.get<Redis>(REDIS_CLIENT));
+  app.useWebSocketAdapter(redisIoAdapter);
 
   app.use(helmet());
   app.use(cookieParser());

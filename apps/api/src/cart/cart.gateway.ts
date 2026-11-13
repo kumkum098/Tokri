@@ -17,7 +17,13 @@ function room(cartId: string) {
 }
 
 @Injectable()
-@WebSocketGateway({ cors: { origin: process.env.WEB_ORIGIN ?? 'http://localhost:3000', credentials: true } })
+@WebSocketGateway({
+  path: '/api/socket.io',
+  cors: {
+    origin: process.env.WEB_ORIGIN ?? 'http://localhost:3000',
+    credentials: true,
+  },
+})
 export class CartGateway implements OnGatewayConnection {
   @WebSocketServer()
   server!: Server;

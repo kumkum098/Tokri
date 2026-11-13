@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "type": "module",
   "scripts": {
-    "build": "nest build",
+    "build": "npm --prefix ../.. run build:shared && npm run prisma:generate && nest build",
     "deploy": "nest deploy",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
@@ -34,6 +34,7 @@
     "@nestjs/throttler": "^6.7.1",
     "@nestjs/websockets": "^12.2.0",
     "@prisma/client": "^6.1.0",
+    "@socket.io/redis-adapter": "^8.3.0",
     "@tokri/shared": "*",
     "bullmq": "^5.34.0",
     "class-transformer": "^0.5.1",

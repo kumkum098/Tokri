@@ -19,9 +19,6 @@ export class AuthController {
     return {
       httpOnly: true,
       secure: isProd,
-      // Frontend (Vercel) and backend (Render) are on different domains in production,
-      // so the refresh cookie needs SameSite=None to be sent on cross-site requests.
-      // 'lax' only works when both are on the same site, which is fine for local dev.
       sameSite: (isProd ? 'none' : 'lax') as 'none' | 'lax',
       domain: this.config.get<string>('COOKIE_DOMAIN') || undefined,
       maxAge: Number(this.config.get<string>('REFRESH_TOKEN_TTL_DAYS') ?? '30') * 24 * 60 * 60 * 1000,

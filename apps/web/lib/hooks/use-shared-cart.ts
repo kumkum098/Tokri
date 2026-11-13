@@ -20,7 +20,6 @@ export function useSharedCart(cartId: string) {
     });
 
     const socket = getSocket();
-    socket.emit('cart:join', { cartId });
 
     function resync() {
       getCart(cartId).then((data) => {
@@ -86,6 +85,11 @@ export function useSharedCart(cartId: string) {
       setCart((prev) => (prev ? { ...prev, status: 'ordered', version: payload.version } : prev));
     }
 
+    function onConnect() {
+      socket.emit('cart:join', { cartId });
+    }
+
+    socket.on('connect', onConnect);
     socket.on('cart:state', onState);
     socket.on('item:added', onItemAdded);
     socket.on('item:updated', onItemUpdated);
@@ -95,9 +99,11 @@ export function useSharedCart(cartId: string) {
     socket.on('cart:locked', onLocked);
     socket.on('split:updated', onSplitUpdated);
     socket.on('cart:ordered', onOrdered);
+    if (socket.connected) onConnect();
 
     return () => {
       cancelled = true;
+      socket.off('connect', onConnect);
       socket.off('cart:state', onState);
       socket.off('item:added', onItemAdded);
       socket.off('item:updated', onItemUpdated);
